@@ -50,6 +50,13 @@ function IngredientForm({ initial, onSubmit, onCancel, loading }) {
   );
 }
 
+function layout ()
+{}
+
+// export default function ShoppingCartPage() {
+//   return <div className="app"><header><h1>Shopping Cart</h1></header></div>;
+// }
+
 
 export default function IngredientsPage() {
   // ...

@@ -1,0 +1,17 @@
+{
+  "BASE_URL": "http://localhost:3000",
+
+  "API_ENDPOINT_LOGIN":    "/api/auth/login",
+  "API_ENDPOINT_REGISTER": "/api/auth/register",
+  "API_ENDPOINT_REFRESH":  "/api/auth/refresh",
+  "API_ENDPOINT_CLASSROOM_LIST": "/api/auth/register/list",
+  "API_ENDPOINT_DISTRIBUTE_BUDGET": "/api/distribute-budget",
+
+  "API_ENDPOINT_INGREDIENT":        "/api/ingredient",
+  "API_ENDPOINT_INGREDIENT_SEARCH": "/api/ingredient/search",
+  "API_ENDPOINT_INGREDIENT_CREATE": "/api/ingredient/create",
+
+  "API_ENDPOINT_ORDER":        "/api/order",
+  "API_ENDPOINT_ORDER_SEARCH": "/api/order/search",
+  "API_ENDPOINT_ORDER_SUBMIT": "/api/order/submit"
+}
