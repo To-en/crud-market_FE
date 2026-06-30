@@ -1,0 +1,164 @@
+<!-- Customize this starter template to relearn basic html , css , and JS -->
+
+<!-- 
+
+First catagory is about element
+
+How to mutate class , and DOM element with css definition (Some css and basic sass also)
+
+Then learn some JS -> document.getEventlistener , document.getEventbyID by Class example 
+
+
+Then React hook and context for state machine and context sharing (basically mean each element can share data without hierarchy)
+ 
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pantry Prep Starter</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+  </head>
+  <body>
+    <nav class="navbar is-primary" aria-label="main navigation">
+      <div class="container">
+        <div class="navbar-brand">
+          <a class="navbar-item has-text-weight-bold" href="#">
+            <span class="icon mr-2" aria-hidden="true">🍳</span>
+            Pantry Prep
+          </a>
+
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="mainNavbar">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <div id="mainNavbar" class="navbar-menu">
+          <div class="navbar-end">
+            <a class="navbar-item" href="#features">Features</a>
+            <a class="navbar-item" href="#orders">Orders</a>
+            <a class="navbar-item" href="#footer">Links</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <section class="hero is-primary is-light is-medium">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns is-vcentered">
+            <div class="column is-8">
+              <p class="has-text-weight-semibold is-uppercase mb-3">High-school kitchen project</p>
+              <h1 class="title is-1">Ingredient ordering made simple.</h1>
+              <p class="subtitle is-4">
+                Plan recipes, request supplies, and keep every cooking class ready for the next lesson.
+              </p>
+              <div class="buttons mt-5">
+                <a class="button is-primary is-medium" href="#orders">Start an Order</a>
+                <a class="button is-light is-medium" href="#features">View Features</a>
+              </div>
+            </div>
+            <div class="column">
+              <div class="box has-background-white">
+                <p class="title is-5 mb-3">Today's prep list</p>
+                <p class="mb-2">12 tomatoes</p>
+                <p class="mb-2">4 bags of flour</p>
+                <p class="mb-2">2 cartons of eggs</p>
+                <span class="tag is-success is-light">Ready for approval</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="container">
+        <div class="has-text-centered mb-6">
+          <p class="has-text-primary has-text-weight-semibold is-uppercase">Starter sections</p>
+          <h2 class="title is-2">Built for classroom kitchen workflows</h2>
+          <p class="subtitle">Reusable Bulma blocks for a clean ingredient ordering app.</p>
+        </div>
+
+        <div class="columns">
+          <div class="column">
+            <div class="card">
+              <div class="card-content">
+                <span class="icon is-large has-text-primary" aria-hidden="true">🥕</span>
+                <h3 class="title is-4 mt-3">Organize Ingredients</h3>
+                <p>Group pantry items by recipe, class period, or cooking station before submitting a request.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="card">
+              <div class="card-content">
+                <span class="icon is-large has-text-primary" aria-hidden="true">🧾</span>
+                <h3 class="title is-4 mt-3">Review Orders</h3>
+                <p>Give teachers a tidy summary of quantities, notes, and substitutions before anything is purchased.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="card">
+              <div class="card-content">
+                <span class="icon is-large has-text-primary" aria-hidden="true">⏲️</span>
+                <h3 class="title is-4 mt-3">Prep On Time</h3>
+                <p>Highlight what is approved, pending, or missing so students can focus on cooking instead of chasing supplies.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="orders" class="section has-background-light">
+      <div class="container">
+        <div class="columns is-vcentered">
+          <div class="column">
+            <h2 class="title is-3">A calm starting point for CRUD practice.</h2>
+            <p class="subtitle">
+              Add forms, tables, and database calls here when the ingredient ordering flow is ready.
+            </p>
+          </div>
+          <div class="column is-narrow">
+            <a class="button is-primary is-medium" href="#">Create Ingredient Request</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer id="footer" class="footer">
+      <div class="content has-text-centered">
+        <p>
+          <strong>Pantry Prep</strong> starter template for cooking class ingredient orders.
+        </p>
+        <p>
+          <a href="#features">Features</a> ·
+          <a href="#orders">Orders</a> ·
+          <a href="#">Back to top</a>
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const burger = document.querySelector('.navbar-burger');
+        const menu = document.getElementById(burger.dataset.target);
+
+        burger.addEventListener('click', () => {
+          burger.classList.toggle('is-active');
+          menu.classList.toggle('is-active');
+          burger.setAttribute('aria-expanded', burger.classList.contains('is-active'));
+        });
+      });
+    </script>
+  </body>
+</html>
