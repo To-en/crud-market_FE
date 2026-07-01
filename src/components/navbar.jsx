@@ -11,6 +11,7 @@ const LINKS = [
 export function Navbar() {
   const { pathname } = useLocation();
   const { isLoggedIn, user, logout } = useAuth();
+  const links = LINKS.filter((l) => l.to !== "/admin" || user?.role === 2);
 
   return (
     <nav className="navbar" role="navigation" aria-label="main navigation">
@@ -19,7 +20,7 @@ export function Navbar() {
       </div>
       <div className="navbar-menu">
         <div className="navbar-start">
-          {LINKS.map((l) => (
+          {links.map((l) => (
             <Link
               key={l.to}
               to={l.to}
@@ -30,7 +31,7 @@ export function Navbar() {
           ))}
         </div>
         <div className="navbar-end">
-          {/* ponytail: minimal auth affordance; TODO Codex — role-based link visibility (hide Admin unless role 2) */}
+          {/* ponytail: minimal auth affordance; */}
           <div className="navbar-item">
             {isLoggedIn
               ? <button className="button is-light is-small" onClick={logout}>Logout {user?.username}</button>

@@ -1,7 +1,19 @@
-// Ingredient category filter bar — flat list of pills, single select
 import { CATEGORY_EMOJI } from "../utils/constants";
+import { requestHTTP } from "../utils/api";
+import { useEffect } from "react";
+
+// This table as a template will be used across the entire app
+
+// Table for ingredient
+// Table for History 
+
+
 
 export function CategoryBar({ categories, selected, onSelect }) {
+  useEffect(()=>{
+    
+
+  },[])
   return (
     <div className="tags">
       <span
@@ -21,4 +33,9 @@ export function CategoryBar({ categories, selected, onSelect }) {
       ))}
     </div>
   );
+}
+
+export function tableHeader({}){
+
+
 }

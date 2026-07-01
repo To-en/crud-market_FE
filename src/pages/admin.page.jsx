@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { requestHTTP, getConfig } from "../utils/api";
 import { CATEGORIES, UNITS, CATEGORY_EMOJI } from "../utils/constants";
-import { ApiLog } from "../components/ApiLog";
+import { LogViewer } from "../components/LogViewer";
 import { Toasts } from "../components/toast";
 import { useAuth } from "../context/auth.context";
 
@@ -61,14 +61,13 @@ export default function AdminPage() {
   const { user } = useAuth();
   const [items, setItems]       = useState([]);
   const [loading, setLoading]   = useState(true);
-  const [logs, setLogs]         = useState([]);
   const [toasts, setToasts]     = useState([]);
   const [formMode, setFormMode] = useState(null); // "create" | item | null
   const [formLoading, setFormLoading] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [config, setConfig]     = useState(null);
 
-  const addLog = useCallback((entry) => setLogs((l) => [...l, entry]), []);
+  const addLog = useCallback(() => {}, []); // client call log dropped; LogViewer reads server files
   const toast = useCallback((msg, type = "success") => {
     const id = Date.now();
     setToasts((t) => [...t, { id, msg, type }]);
@@ -173,7 +172,7 @@ export default function AdminPage() {
           </table>
         )}
 
-        <ApiLog logs={logs} />
+        <LogViewer token={user?.accessToken} />
       </div>
 
       <div className="column is-5">

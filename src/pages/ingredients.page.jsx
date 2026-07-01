@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { requestHTTP, getConfig } from "../utils/api";
-import { CATEGORIES, CATEGORY_EMOJI } from "../utils/constants";
 import { useCart } from "../context/cart.context";
 import { SearchBar } from "../components/searchbar";
 import { CategoryBar } from "../components/table";
-import { ApiLog } from "../components/ApiLog";
 import { Toasts } from "../components/toast";
+
+// Todo: delete , and chagne to fetch option from Backend instead (Needs new table , category)
+import { CATEGORIES, CATEGORY_EMOJI } from "../utils/constants";
 
 // Student-facing market: browse available ingredients → filter → add to cart → submit order.
 // Admin CRUD lives in admin.page.jsx.
@@ -13,14 +14,14 @@ export default function IngredientsPage() {
   const { items: cart, addItem, updateQty, removeItem, clearCart, totalPrice } = useCart();
   const [items, setItems]     = useState([]);
   const [loading, setLoading] = useState(true);
-  const [logs, setLogs]       = useState([]);
   const [toasts, setToasts]   = useState([]);
   const [query, setQuery]     = useState("");
   const [category, setCategory] = useState(null);
   const [config, setConfig]   = useState(null);
 
-  const addLog = useCallback((entry) => setLogs((l) => [...l, entry]), []);
+  const addLog = useCallback(() => {}, []); // request log UI moved to admin page
   const toast = useCallback((msg, type = "success") => {
+
     const id = Date.now();
     setToasts((t) => [...t, { id, msg, type }]);
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 3000);
@@ -36,7 +37,7 @@ export default function IngredientsPage() {
       const data = await requestHTTP("GET", config.API_ENDPOINT_INGREDIENT, undefined, addLog);
       setItems(Array.isArray(data) ? data : data.items ?? []);
     } catch {
-      toast("Cannot reach backend — is it running on :3001?", "error");
+      toast("Cannot reach backend — is it running on correct:3000?", "error");
     } finally {
       setLoading(false);
     }
@@ -90,8 +91,6 @@ export default function IngredientsPage() {
             ))}
           </div>
         )}
-
-        <ApiLog logs={logs} />
       </div>
 
       {/* Cart summary */}

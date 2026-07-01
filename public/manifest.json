@@ -1,3 +1,20 @@
-{
-  "comment":"How to write manifest"
-}
+ {
+    "name": "Cook & Order",
+    "short_name": "Cook",
+    "start_url": "/ingredients",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#3273dc",
+    "icons": [
+      {
+        "src": "/icons/icon-192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/icons/icon-512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }

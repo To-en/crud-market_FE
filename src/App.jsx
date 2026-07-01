@@ -14,11 +14,19 @@ const IngredientsPage   = lazy(() => import("./pages/ingredients.page"));
 const OrderHistoryPage  = lazy(() => import("./pages/orderHistory.page"));
 const AdminPage         = lazy(() => import("./pages/admin.page"));
 
-// TODO Codex — auth guard: /admin (role 2) + /order-history need login. auth.context has no
+// TODO Codex — auth guard: /admin page (role 2) + /order-history need login. auth.context has no
 //   session persistence yet, so a guard would log users out on refresh. Add persistence first
 //   (localStorage/refresh-token), then wrap protected routes in a <RequireAuth role={...}/>.
 
-// auth provider for all , but no guarded route , hmmm
+// Should the persistence be added to 
+/**
+ * 1. Add session persistence, 
+ * 2. Demo button to transition between page first
+ * 3. Make up a dev auth again in the 
+ * 4. Add guard to route -> don't know how yet , does react router has any of that?
+ * 5. Refine the UI with CC ,Codex ค่อยๆ เรียนตามมันไป เราจะไม่เอาอะไรมากกับพวก UI ละ ค่อยไปเรียนเขียน figma เอา
+ * 
+ */
 export default function App() {
   return (
     <AuthProvider>
@@ -30,6 +38,7 @@ export default function App() {
               <Route path="/login/register" element={<RegisterPage />} />
             </Route>
             <Route element={<MainLayout />}>
+              {/* Route path / to ingredient page */}
               <Route path="/"              element={<Navigate to="/ingredients" replace />} />
               <Route path="/ingredients"   element={<CartProvider><IngredientsPage /></CartProvider>} />
               <Route path="/order-history" element={<OrderHistoryPage />} />

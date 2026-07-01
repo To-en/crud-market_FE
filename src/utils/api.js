@@ -1,8 +1,4 @@
 
-// Backend url (เอาออกทีหลัง)
-const baseurl     = import.meta.env.VITE_BASE_URL;
-const apiendpoint = import.meta.env.VITE_API_ENDPOINT;
-
 export async function getConfig() { 
   try {
     const res = await fetch('/config.json'); // 
@@ -26,7 +22,7 @@ export async function requestHTTP(method, path, body, onLog, token=null) {
   };
   const start = Date.now();
   try {
-    const res  = await fetch(`${apiendpoint}${path}`, opts);
+    const res  = await fetch(path, opts);
     const data = await res.json();
     onLog({ method, path, status: res.status, ok: res.ok, ms: Date.now() - start });
     if (!res.ok) throw new Error(data.error || "Request failed");
