@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/auth.context";
 import { Card } from "../components/card";
 import { Button } from "../components/button";
@@ -8,7 +8,7 @@ import { Button } from "../components/button";
 function LoginForm() {
   let navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState(null);
-  const { login } = useAuth(); // pull login
+  const { login } = useAuth(); 
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +18,6 @@ function LoginForm() {
     e.preventDefault();
     try {
       await login(username, password);
-      // upon successful -> route to ingredient market (Home page)
       navigate("/ingredients");
     } catch (err) {
       setErrorMsg(err.message);
@@ -46,9 +45,15 @@ function LoginForm() {
 
       {errorMsg && <div className="notification is-danger is-light">{errorMsg}</div>}
 
-      <div className="field">
+      <div className="field" style={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
         {/* Button component — variant="primary" maps to Bulma "is-primary" inside button.jsx */}
         <Button variant="primary" type="submit" onClick={handleSubmit}>Login</Button>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Link to="/register" style={{ textDecoration: "underline" }}>
+          Register
+        </Link>
+      </div>
+
       </div>
     </form>
   );

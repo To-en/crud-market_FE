@@ -4,6 +4,7 @@ const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
   // Cart state , hold onto localStorage in json format
+  // Lazy init: set initial state as empty localstorage
   const [items, setItems] = useState(() =>
     JSON.parse(localStorage.getItem("cart") || "[]")
   );
@@ -37,14 +38,13 @@ export function CartProvider({ children }) {
   };
 
   const updateQty = (id, qty) => {
-    // Increment or decrement
-
-    // Decrement 
+    // remove entirely if qty -> 0
     if (qty <= 0) {
       removeItem(id);
       return;
     }
-
+    
+    // Increment or decrement
     setItems((currentItems) =>
       currentItems.map((item) =>
         item.ingredient.id === id ? { ...item, qty } : item
@@ -56,9 +56,9 @@ export function CartProvider({ children }) {
     setItems([]);
   };
 
-  // ponytail: recomputes every render, wrap in useMemo if perf matters
+  // Notes wrap totalPrice in useMemo to cache calculation results
   const totalPrice = items.reduce(
-    (sum, { ingredient, qty }) => sum + ingredient.unitprice * qty,
+    (sum, { ingredient, qty }) => sum + ingredient.unitPrice * qty,
     0
   );
 

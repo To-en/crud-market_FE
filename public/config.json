@@ -9,12 +9,9 @@
   "API_ENDPOINT_INGREDIENT":        "/api/ingredients",
   "API_ENDPOINT_INGREDIENT_SEARCH": "/api/ingredients/search",
   "API_ENDPOINT_INGREDIENT_CREATE": "/api/ingredients/create",
-  
+  "API_ENDPOINT_CATEGORY":          "/api/categories",
+
   "API_ENDPOINT_ORDER":             "/api/order",
   "API_ENDPOINT_ORDER_SEARCH":      "/api/order/search",
   "API_ENDPOINT_ORDER_SUBMIT":      "/api/order/submit"
-
-
-  
-  ,"comment":"Production usage"
 }

@@ -10,7 +10,7 @@ export async function getConfig() {
 }
 
 // Universal http fetch request 
-export async function requestHTTP(method, path, body, onLog, token=null) {
+export async function requestHTTP(method, path, body, onLog = () => {}, token=null) {
   // token with be passed from auth context later time
   const opts = {
     method,
@@ -35,5 +35,5 @@ export async function requestHTTP(method, path, body, onLog, token=null) {
 
 // Universal GQL fetch request
 export async function requestGQL(queryString) {
-  // call some apollo
+  // call some apollo stuffs
 }
