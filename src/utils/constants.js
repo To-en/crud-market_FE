@@ -2,8 +2,4 @@
 export const CATEGORIES = ["Grain", "Protein", "Vegetable", "Dairy", "Spice"];
 export const UNITS      = ["kg", "g", "L", "ml", "pcs"];
 
-export const CATEGORY_EMOJI = {
-  Grain: "🌾", Protein: "🥩", Vegetable: "🥦", Dairy: "🥛", Spice: "🧄",
-};
-
 // There should be endpoint to get option , this won't be necessary

@@ -1,7 +1,3 @@
-import { CATEGORY_EMOJI } from "../utils/constants";
-import { requestHTTP } from "../utils/api";
-import { useEffect } from "react";
-
 // This table as a template will be used across the entire app
 
 // Table for ingredient
@@ -10,10 +6,6 @@ import { useEffect } from "react";
 
 
 export function CategoryBar({ categories, selected, onSelect }) {
-  useEffect(()=>{
-    
-
-  },[])
   return (
     <div className="tags">
       <span
@@ -28,7 +20,7 @@ export function CategoryBar({ categories, selected, onSelect }) {
           className={`tag is-medium is-clickable ${selected === c ? "is-link" : ""}`}
           onClick={() => onSelect(c)}
         >
-          {CATEGORY_EMOJI[c] ?? ""} {c}
+          {c}
         </span>
       ))}
     </div>

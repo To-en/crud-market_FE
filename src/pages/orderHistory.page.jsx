@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { requestHTTP, getConfig } from "../utils/api";
 import { useAuth } from "../context/auth.context";
 import { SearchBar } from "../components/searchbar";
@@ -33,6 +33,10 @@ export default function OrderHistoryPage() {
   const [loading, setLoading] = useState(true);             // hold loading state until fetch success (then cleared , set null).
   const [query, setQuery]     = useState("");
   const [config, setConfig]   = useState(null);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const sentinelRef = useRef(null);
+  const hasMore = orders.length < total;
 
   // Fetch config file at first page render
   useEffect(() => { getConfig().then(setConfig); }, []);
@@ -44,28 +48,44 @@ export default function OrderHistoryPage() {
     if (!config || !user?.accessToken) return;
     setLoading(true);
     try {
+      const PAGE_SIZE = Number(import.meta.env.VITE_PAGESIZE) || 40;
       // if have query search use API search , having none use listall associated order
+      const params = new URLSearchParams({ page, limit: PAGE_SIZE });
+      const searchParams = new URLSearchParams({ value: query, page, limit: PAGE_SIZE });
       const path = query
-      ? `${config.API_ENDPOINT_ORDER_SEARCH}?${new URLSearchParams({ value: query })}`
-      : config.API_ENDPOINT_ORDER;
+      ? `${config.API_ENDPOINT_ORDER_SEARCH}?${searchParams}`
+      : `${config.API_ENDPOINT_ORDER}?${params}`;
       const data = await requestHTTP("GET", path, undefined, undefined, user.accessToken);
-      
-      setOrders(Array.isArray(data) ? data : data.data ?? []);
+
+      setTotal(data.total ?? 0);
+      page === 1 ? setOrders(data.data ?? []) : setOrders(prev => [...prev, ...(data.data ?? [])]);
     } catch {
       setOrders([]);
     } finally {
       // Upon resolved fetch , disable loading screen
       setLoading(false);
     }
-  }, [config, user?.accessToken, query]);
+  }, [config, user?.accessToken, query, page]);
 
   // First render + subsequence change on fetchOrders
   useEffect(() => { fetchOrders(); }, [fetchOrders]);
 
+  useEffect(() => setPage(1), [query]);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && hasMore && !loading) setPage(p => p + 1);
+    });
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasMore, loading]);
+
   // updateOrderStatus fetch
   async function changeOrderStatus(orderId, status) {
-    await requestHTTP("PATCH", orderUrl(config, orderId, "status"), { status }, undefined, user.accessToken);
-    fetchOrders();
+    const updated = await requestHTTP("PATCH", orderUrl(config, orderId, "status"), { status }, undefined, user.accessToken);
+    setOrders(prev => prev.map(o => o.id === orderId ? (updated?.data ?? updated ?? { ...o, status }) : o));
   }
 
   // OpenOrderBill fetch
@@ -103,7 +123,7 @@ export default function OrderHistoryPage() {
       <h1 className="title is-4">Order History</h1>
       <SearchBar value={query} onChange={setQuery} placeholder="Search by name or order id…" />
 
-      {loading ? (
+      {loading && page === 1 ? (
         <div className="loading-row"><span className="spinner" /> Loading orders…</div>
       ) : orders.length === 0 ? (
         <div className="notification">No orders yet.</div>
@@ -128,10 +148,6 @@ export default function OrderHistoryPage() {
           </thead>
           <tbody>
             {/* Map order array orderElem = element from order array */}
-
-            {/* Move up the guard condition up above to the table header , as for admin , 
-              will see another column name classroom -> in the future might be grouped by classroom view (But leave it for later release) */}
-
             {orders.map((orderElem) => (
               <tr key={orderElem.id} onClick={() => openOrder(orderElem.id)} style={{ cursor: "pointer" }}>
                 <td>{orderElem.id}</td>
@@ -169,16 +185,29 @@ export default function OrderHistoryPage() {
         </table>
       )}
 
+      <div ref={sentinelRef} />
+      {loading && hasMore && (
+        <div className="loading-row"><span className="spinner" /> Loading more…</div>
+      )}
+
       {/* Bill subpage (Should be floating windows) Not appear on Order  */}
       {selectedOrder && (
-        <div className="box mt-4">
-          <h2 className="title is-6">Order #{selectedOrder.id}</h2>
-          {(selectedOrder.items ?? []).map((item) => (
-            <div key={item.ingredientId} className="level is-mobile mb-1">
-              <span>{item.name}</span>
-              <span>{item.qty} {item.unit} · {item.subtotal}</span>
-            </div>
-          ))}
+        <div className="modal is-active">
+          <div className="modal-background" onClick={() => setSelectedOrder(null)} />
+          <div className="modal-card">
+            <header className="modal-card-head">
+              <p className="modal-card-title">Order #{selectedOrder.id}</p>
+              <button className="delete" aria-label="close" onClick={() => setSelectedOrder(null)} />
+            </header>
+            <section className="modal-card-body">
+              {(selectedOrder.items ?? []).map((item) => (
+                <div key={item.ingredientId} className="level is-mobile mb-1">
+                  <span>{item.name}</span>
+                  <span>{item.qty} {item.unit} · {item.subtotal}</span>
+                </div>
+              ))}
+            </section>
+          </div>
         </div>
       )}
     </div>

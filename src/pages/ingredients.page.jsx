@@ -5,7 +5,6 @@ import { useAuth } from "../context/auth.context";
 import { SearchBar } from "../components/searchbar";
 import { CategoryBar } from "../components/table";
 import { Toasts } from "../components/toast";
-import { CATEGORY_EMOJI } from "../utils/constants";
 
 // Student-facing market: browse available ingredients → filter → add to cart → submit order.
 // Admin CRUD lives in admin.page.jsx.
@@ -21,8 +20,11 @@ export default function IngredientsPage() {
   const [category, setCategory] = useState(null);
   const [orderName, setOrderName] = useState("");
   const [config, setConfig]   = useState(null);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const addLog = useCallback(() => {}, []); // request log UI moved to admin page
+  const PAGE_SIZE = Number(import.meta.env.VITE_PAGESIZE) || 40;
 
   // Toast UI appear when order API fired success (No 500 error return)
   // For GQL Implementation
@@ -50,22 +52,27 @@ export default function IngredientsPage() {
       const params = new URLSearchParams();
       if (query) params.set("q", query);
       if (category) params.set("category", category);
+      params.set("page", page);
+      params.set("limit", PAGE_SIZE);
       const path = `${config.API_ENDPOINT_INGREDIENT_SEARCH}?${params}`;
       const res = await requestHTTP("GET", path, undefined, addLog);
       setItems(res.data ?? []);
+      setTotal(res.total ?? 0);
     } catch {
       toast("Cannot reach backend — is it running on correct:3000?", "error");
     } finally {
       setLoading(false);
     }
-  }, [config, query, category, addLog, toast]);
+  }, [config, query, category, page, PAGE_SIZE, addLog, toast]);
 
   // Debounce so typing in search doesn't fire a request per keystroke.
   useEffect(() => {
     const t = setTimeout(fetchItems, 300);
     return () => clearTimeout(t);
-  }, [fetchItems]); 
+  }, [fetchItems]);
   // only fetch per 300ms once after another fetch
+
+  useEffect(() => setPage(1), [query, category]);
 
   async function submitOrder() {
     if (!user?.accessToken) { toast("Log in to submit an order", "error"); return; }
@@ -105,7 +112,7 @@ export default function IngredientsPage() {
               <div key={item.id} className="column is-4">
                 <div className="card">
                   <div className="card-content">
-                    <p className="title is-6">{CATEGORY_EMOJI[item.category] ?? "🍽️"} {item.name}</p>
+                    <p className="title is-6">{item.name}</p>
                     <p className="subtitle is-7">{item.unitPrice} / {item.unit} · {item.stock} in stock</p>
                     <button
                       className="button is-primary is-small is-fullwidth"
@@ -119,6 +126,38 @@ export default function IngredientsPage() {
               </div>
             ))}
           </div>
+        )}
+        {total > PAGE_SIZE && (
+          <nav className="pagination is-centered" role="navigation" aria-label="pagination">
+            <button
+              className="pagination-previous"
+              disabled={page <= 1}
+              onClick={() => setPage(page - 1)}
+            >
+              Previous
+            </button>
+            <button
+              className="pagination-next"
+              disabled={page >= Math.ceil(total / PAGE_SIZE)}
+              onClick={() => setPage(page + 1)}
+            >
+              Next page
+            </button>
+            <ul className="pagination-list">
+              {Array.from({ length: Math.ceil(total / PAGE_SIZE) }, (_, i) => i + 1).map((n) => (
+                <li key={n}>
+                  <button
+                    className={`pagination-link${n === page ? " is-current" : ""}`}
+                    aria-label={`Goto page ${n}`}
+                    aria-current={n === page ? "page" : undefined}
+                    onClick={() => setPage(n)}
+                  >
+                    {n}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
         )}
       </div>
 

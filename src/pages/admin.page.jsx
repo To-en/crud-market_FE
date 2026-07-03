@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { requestHTTP, getConfig } from "../utils/api";
-import { CATEGORIES, UNITS, CATEGORY_EMOJI } from "../utils/constants";
+import { CATEGORIES, UNITS } from "../utils/constants";
 import { LogViewer } from "../components/LogViewer";
 import { Toasts } from "../components/toast";
 import { useAuth } from "../context/auth.context";
@@ -151,7 +151,7 @@ export default function AdminPage() {
             <tbody>
               {items.map((item) => (
                 <tr key={item.id}>
-                  <td>{CATEGORY_EMOJI[item.category] ?? "🍽️"}</td>
+                  <td></td>
                   <td>{item.name}</td>
                   <td>{item.category}</td>
                   <td>{item.price}</td>

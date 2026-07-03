@@ -23,10 +23,15 @@ export function AuthProvider({ children }) {
     clearTimeout(refreshTimerRef.current);
     if (!expires) return;
     const refreshAt = (expires * 60 * 1000) - 60_000; // 1 min before expire
+
+    // DEBUG: ลด accessExpire ใน BE config เพื่อเทส เช่น 2 นาที → refresh fire ที่นาทีที่ 1
+    console.log(`[auth] refresh scheduled in ${(refreshAt / 1000).toFixed(1)}s`);
+
     if (refreshAt <= 0) return;
-    
+
     // เมื่อถึงเวลา 1 min before expire จะ async execute Endpoint /api/refresh ทันที
     refreshTimerRef.current = setTimeout(async () => {
+      console.log('[auth] refreshing token...');
       try {
         const cfg = await getConfig();
         const data = await requestHTTP('POST', cfg.API_ENDPOINT_REFRESH, { refreshToken }, console.log);
