@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
 import { requestHTTP, getConfig } from '../utils/api.js'
+
 
 // 1.Context object -> Hold state transfer
 const AuthContext = createContext(null);
@@ -10,10 +11,36 @@ export function AuthProvider({ children }) {
     JSON.parse(localStorage.getItem("userAuth") || "null")
   ); // null = ยังไม่ login
 
-  // getConfig() คืน Promise → ต้องใช้ useEffect แบบทำครั้งเดียว เพื่อ resolve ข้างใน
   const [config, setConfig] = useState(null);
+  const refreshTimerRef = useRef(null);
+
   useEffect(() => {
     getConfig().then(setConfig);
+  }, []);
+
+  // expires = minutes until accessToken expiry (from BE response)
+  const scheduleRefresh = useCallback((expires, refreshToken) => {
+    clearTimeout(refreshTimerRef.current);
+    if (!expires) return;
+    const refreshAt = (expires * 60 * 1000) - 60_000; // 1 min before expire
+    if (refreshAt <= 0) return;
+    
+    // เมื่อถึงเวลา 1 min before expire จะ async execute Endpoint /api/refresh ทันที
+    refreshTimerRef.current = setTimeout(async () => {
+      try {
+        const cfg = await getConfig();
+        const data = await requestHTTP('POST', cfg.API_ENDPOINT_REFRESH, { refreshToken }, console.log);
+        const next = { ...data };
+        setUser(prev => {
+          const updated = { ...prev, accessToken: data.accessToken, expires: data.expires };
+          localStorage.setItem("userAuth", JSON.stringify(updated));
+          return updated;
+        });
+        scheduleRefresh(data.expires, refreshToken);
+      } catch {
+        logout();
+      }
+    }, refreshAt);
   }, []);
 
   const login = async ( user , pass ) => {
@@ -22,24 +49,32 @@ export function AuthProvider({ children }) {
     const data = await requestHTTP('POST', config.API_ENDPOINT_LOGIN, user_data  ,console.log);
     const nextUser = data.user ?? data; // { username, role , accessToken, refreshToken }
     setUser(nextUser);
-    // stored fetched user-credential payload into storage, to be consumes later
     localStorage.setItem("userAuth", JSON.stringify(nextUser));
+    scheduleRefresh(nextUser.expires, nextUser.refreshToken);
   };
 
   const register = async ( user , pass, classroom ) => {
     const user_data = { username: user, password: pass, classroom };
     if (!config) throw new Error("Config not loaded yet");
     const data = await requestHTTP('POST', config.API_ENDPOINT_REGISTER, user_data  ,console.log);
-    const nextUser = data.user ?? data; // { username, role , accessToken, refreshToken }
+    const nextUser = data.user ?? data;
     setUser(nextUser);
     localStorage.setItem("userAuth", JSON.stringify(nextUser));
+    scheduleRefresh(nextUser.expires, nextUser.refreshToken);
   };
-  
+
   const logout = () => {
+    clearTimeout(refreshTimerRef.current);
     setUser(null);
     localStorage.removeItem("userAuth");
     requestHTTP('POST', '/auth/logout', undefined, console.log).catch(() => {});
   };
+
+  // on mount: if user loaded from localStorage, reschedule refresh
+  useEffect(() => {
+    if (user?.accessToken) scheduleRefresh(user.expires, user.refreshToken);
+    return () => clearTimeout(refreshTimerRef.current);
+  }, []);
 
   const isLoggedIn = !!user; // เมื่อ user not null ก็แปลว่า isLoggedIn แล้ว
   return (

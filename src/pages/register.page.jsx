@@ -26,7 +26,7 @@ function RegisterForm() {
     e.preventDefault();
     try {
       await register(username, password, classroom);
-      navigate("/ingredients");
+      navigate("/login");
     } catch (err) {
       setErrorMsg(err.message);
     }

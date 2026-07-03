@@ -26,6 +26,8 @@ const orderUrl = (config, id, action = "") =>
 // One-way flow: query/token/config drive fetchOrders; row click drives openOrder.
 export default function OrderHistoryPage() {
   const { user } = useAuth();
+  const isAdmin = user?.role === 2;   // teacher=1, admin=2 — admin sees extra owner/classroom columns
+  const isTeacher = user?.role === 1;   // teacher=1, admin=2 — admin sees extra owner/classroom columns
   const [orders, setOrders]   = useState([]);               // Hold array of orders object
   const [selectedOrder, setSelectedOrder] = useState(null); // Hold selected order array element
   const [loading, setLoading] = useState(true);             // hold loading state until fetch success (then cleared , set null).
@@ -42,7 +44,7 @@ export default function OrderHistoryPage() {
     if (!config || !user?.accessToken) return;
     setLoading(true);
     try {
-      
+      // if have query search use API search , having none use listall associated order
       const path = query
       ? `${config.API_ENDPOINT_ORDER_SEARCH}?${new URLSearchParams({ value: query })}`
       : config.API_ENDPOINT_ORDER;
@@ -111,11 +113,17 @@ export default function OrderHistoryPage() {
         <table className="table is-fullwidth is-hoverable">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Order</th>
               <th>Name</th>
               <th>Total</th>
               <th>Status </th>
               <th>Date</th>
+              {(isAdmin || isTeacher) && (
+                <>
+                  <th>Owner</th>
+                  <th>Classroom</th>
+                </>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -148,7 +156,13 @@ export default function OrderHistoryPage() {
                     </span>
                   )}
                 </td>
-                <td>{orderElem.createdDate}</td>
+                <td>{orderElem.createdDate ? new Date(orderElem.createdDate).toLocaleDateString('th-TH', { timeZone: 'Asia/Bangkok' }) : '—'}</td>
+                {(isAdmin || isTeacher) && (
+                  <>
+                    <td>{orderElem.owner ?? "—"}</td>
+                    <td>{orderElem.classroom ?? "—"}</td>
+                  </>
+                )}
               </tr>
             ))}
           </tbody>
