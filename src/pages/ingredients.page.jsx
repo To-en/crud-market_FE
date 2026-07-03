@@ -110,10 +110,21 @@ export default function IngredientsPage() {
           <div className="columns is-multiline">
             {items.map((item) => (
               <div key={item.id} className="column is-4">
-                <div className="card">
-                  <div className="card-content">
-                    <p className="title is-6">{item.name}</p>
-                    <p className="subtitle is-7">{item.unitPrice} / {item.unit} · {item.stock} in stock</p>
+                <div className="card ingredient-card">
+                  <div className="ingredient-card__img">
+                    <img
+                      src={item.imageUrl || "/images/food-svgrepo-com.svg"}
+                      alt={item.name}
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="ingredient-card__info">
+                    <p className="ingredient-card__title">
+                      {item.name}
+                      {item.brand ? ` · ${item.brand}` : ""} · {item.stock} in stock
+                    </p>
+                    <p className="ingredient-card__category">{item.category}</p>
+                    <p className="ingredient-card__price">{item.unitPrice} / {item.unit}</p>
                     <button
                       className="button is-primary is-small is-fullwidth"
                       disabled={item.stock <= 0}
@@ -161,8 +172,8 @@ export default function IngredientsPage() {
         )}
       </div>
 
-      {/* Cart summary */}
-      <div className="column is-4">
+      {/* Cart summary — sticky so it stays in view while the market scrolls */}
+      <div className="column is-4 cart-sticky">
         <div className="card">
           <div className="card-header"><p className="card-header-title">Cart ({cart.length})</p></div>
           <div className="card-content">

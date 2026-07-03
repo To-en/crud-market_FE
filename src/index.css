@@ -1,105 +1,16 @@
-/* @import "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"; */
+/* Bulma provides layout/components (imported in main.jsx).
+   This file holds only what has no Bulma equivalent. */
 
-/* ── CSS Variables ── */
 :root {
-  --bg:       #f8f8f6;
-  --surface:  #ffffff;
-  --border:   #e4e4e0;
-  --text:     #1a1a18;
-  --muted:    #6b6b66;
-  --accent:   #2563eb;
-  --accent-h: #1d4ed8;
-  --danger:   #dc2626;
-  --danger-h: #b91c1c;
-  --success:  #16a34a;
-  --radius:   8px;
-  --mono:     "JetBrains Mono", "Fira Code", monospace;
+  --accent:  #2563eb;
+  --muted:   #6b6b66;
+  --danger:  #dc2626;
+  --success: #16a34a;
 }
 
-/* ── Layout ── */
-.app { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
-.layout { display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem; align-items: start; }
-
-header {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border);
-}
-header h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
-
-/* ── Custom components (no Bulma equivalent) ── */
-.badge {
-  font-size: 11px; font-weight: 500;
-  padding: 2px 8px; border-radius: 99px;
-  background: #dbeafe; color: #1e40af;
-}
-.status-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: #d1d5db; display: inline-block;
-  margin-left: auto; transition: background .3s;
-}
-.status-dot.online { background: var(--success); box-shadow: 0 0 0 2px #bbf7d0; }
-
-/* ── User / Ingredient list ── */
-.user-list { list-style: none; }
-.user-row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 16px; border-bottom: 1px solid var(--border); transition: background .1s;
-}
-.user-row:last-child { border-bottom: none; }
-.user-row:hover { background: var(--bg); }
-.avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: #dbeafe; color: #1e40af;
-  font-weight: 600; font-size: 13px;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.user-info { flex: 1; min-width: 0; }
-.user-name { font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.user-email { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.role-pill {
-  font-size: 11px; padding: 2px 8px; border-radius: 99px;
-  border: 1px solid var(--border); color: var(--muted); white-space: nowrap;
-}
-.user-actions { display: flex; gap: 6px; }
-
-/* ── Empty state ── */
+/* ── Empty state (LogViewer) ── */
 .empty { padding: 3rem 1rem; text-align: center; color: var(--muted); }
 .empty .icon { font-size: 32px; margin-bottom: 8px; }
-
-/* ── Custom button variants (Bulma ใช้ .button .is-* แทนได้) ── */
-.btn-primary { background: var(--accent); color: white; }
-.btn-primary:hover { background: var(--accent-h); }
-.btn-danger  { background: transparent; color: var(--danger); border: 1px solid #fecaca; padding: 4px 10px; font-size: 12px; }
-.btn-danger:hover { background: #fef2f2; }
-.btn-edit    { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 4px 10px; font-size: 12px; }
-.btn-edit:hover { background: var(--bg); color: var(--text); }
-.btn-sm { padding: 4px 10px; font-size: 12px; }
-
-/* ── Form layout helpers (Bulma ใช้ .field .control แทนได้) ── */
-.form-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
-.form-group { display: flex; flex-direction: column; gap: 5px; }
-.form-actions { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border); }
-
-/* ── API Log ── */
-.log-list { list-style: none; font-family: var(--mono); font-size: 11px; max-height: 280px; overflow-y: auto; }
-.log-entry {
-  padding: 7px 14px; border-bottom: 1px solid var(--border);
-  display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; line-height: 1.4;
-}
-.log-entry:last-child { border-bottom: none; }
-.log-method { font-weight: 700; font-size: 10px; padding: 1px 5px; border-radius: 3px; letter-spacing: 0.5px; }
-.GET    { background: #dbeafe; color: #1e40af; }
-.POST   { background: #dcfce7; color: #166534; }
-.PUT    { background: #fef9c3; color: #854d0e; }
-.DELETE { background: #fce8e8; color: #991b1b; }
-.log-path { color: var(--text); }
-.log-status { color: var(--muted); font-size: 10px; }
-.log-status.ok { color: var(--success); }
-.log-status.err { color: var(--danger); }
 
 /* ── Toast ── */
 .toast-wrap { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 8px; z-index: 100; }
@@ -111,7 +22,7 @@ header h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
 .toast.error   { background: var(--danger); }
 @keyframes slideUp { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-/* ── Spinner (Bulma มี .loader แต่ animation ต่างกัน) ── */
+/* ── Spinner (Bulma .loader has a different animation) ── */
 .spinner {
   width: 16px; height: 16px;
   border: 2px solid #e5e7eb; border-top-color: var(--accent);
@@ -120,63 +31,20 @@ header h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-row { display: flex; align-items: center; gap: 10px; padding: 24px 16px; color: var(--muted); font-size: 13px; }
 
-
-/* ──────────────────────────────────────────────────────────────
-   Override CSS (ใช้เมื่อจำเป็น — ชนกับ Bulma ทั้งหมด uncomment เมื่อต้องการ)
-   ────────────────────────────────────────────────────────────── */
-
-/* *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; } */
-
-/* body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 14px;
-  line-height: 1.6;
-  min-height: 100vh;
-} */
-
-/* button {
-  cursor: pointer;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 6px 14px;
-  transition: background .15s, opacity .15s;
+/* ── Ingredient market card: image on top, info fills the rest ── */
+.ingredient-card { display: flex; flex-direction: column; height: 100%; }
+.ingredient-card__img {
+  flex: 0 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0.75rem; background: #fff;
 }
-button:disabled { opacity: 0.5; cursor: not-allowed; } */
+.ingredient-card__img img { max-width: 100%; max-height: 180px; object-fit: contain; }
+.ingredient-card__info { flex: 1; padding: 0.75rem 1rem 1rem; }
+.ingredient-card__title { font-size: 1.05rem; font-weight: 700; color: #000; margin-bottom: 0.25rem; }
+.ingredient-card__category { font-size: 0.95rem; color: #000; margin-bottom: 0.25rem; }
+.ingredient-card__price { font-size: 0.9rem; color: #000; margin-bottom: 0.5rem; }
 
-/* label { font-size: 12px; font-weight: 500; color: var(--muted); } */
-
-/* input, select {
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 8px 10px;
-  font-size: 13px;
-  color: var(--text);
-  background: var(--surface);
-  width: 100%;
-  transition: border-color .15s, box-shadow .15s;
-}
-input:focus, select:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(37,99,235,.12);
-} */
-
-/* .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-} */
-
-/* .card-header {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-  font-size: 12px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.6px;
-  color: var(--muted);
-  display: flex; align-items: center; justify-content: space-between;
-} */
+/* Cart stays pinned while the market list scrolls.
+   align-self:flex-start stops the Bulma flex column from stretching full-height,
+   which would otherwise leave nothing to "stick" against. */
+.cart-sticky { position: sticky; top: 1rem; align-self: flex-start; }
