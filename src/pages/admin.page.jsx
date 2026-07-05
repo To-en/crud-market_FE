@@ -84,7 +84,7 @@ export default function AdminPage() {
       const data = await requestHTTP("GET", config.API_ENDPOINT_INGREDIENT, undefined, addLog);
       setItems(Array.isArray(data) ? data : data.items ?? []);
     } catch {
-      toast("Cannot reach backend — is it running on :3001?", "error");
+      toast("Cannot reach backend — is it running on :3000?", "error");
     } finally {
       setLoading(false);
     }
