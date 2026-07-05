@@ -24,7 +24,7 @@ export default function IngredientsPage() {
   const [total, setTotal] = useState(0);
 
   const addLog = useCallback(() => {}, []); // request log UI moved to admin page
-  const PAGE_SIZE = Number(import.meta.env.VITE_PAGESIZE) || 40;
+  const PAGE_SIZE = Number(import.meta.env.VITE_MARKET_PAGESIZE) || 40;
 
   // Toast UI appear when order API fired success (No 500 error return)
   // For GQL Implementation
