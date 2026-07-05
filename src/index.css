@@ -1,6 +1,34 @@
 /* Bulma provides layout/components (imported in main.jsx).
    This file holds only what has no Bulma equivalent. */
 
+/* ── Thai font (files in public/fonts, served from root; %20 for spaces) ── */
+@font-face {
+  font-family: 'Sarabun';
+  src: url('/fonts/THSarabunNew.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Sarabun';
+  src: url('/fonts/THSarabunNew%20Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Sarabun';
+  src: url('/fonts/THSarabunNew%20Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Sarabun';
+  src: url('/fonts/THSarabunNew%20BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+}
+
+body { font-family: 'Sarabun', sans-serif; }
+
 :root {
   --accent:  #2563eb;
   --muted:   #6b6b66;

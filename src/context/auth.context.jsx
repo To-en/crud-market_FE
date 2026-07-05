@@ -18,11 +18,11 @@ export function AuthProvider({ children }) {
     getConfig().then(setConfig);
   }, []);
 
-  // expires = minutes until accessToken expiry (from BE response)
-  const scheduleRefresh = useCallback((expires, refreshToken) => {
+  // expiresAt = absolute ms timestamp when accessToken expires (stored in localStorage)
+  const scheduleRefresh = useCallback((expiresAt, refreshToken) => {
     clearTimeout(refreshTimerRef.current);
-    if (!expires) return;
-    const refreshAt = (expires * 60 * 1000) - 60_000; // 1 min before expire
+    if (!expiresAt) return;
+    const refreshAt = expiresAt - Date.now() - 60_000; // 1 min before expire
 
     // DEBUG: ลด accessExpire ใน BE config เพื่อเทส เช่น 2 นาที → refresh fire ที่นาทีที่ 1
     console.log(`[auth] refresh scheduled in ${(refreshAt / 1000).toFixed(1)}s`);
@@ -35,13 +35,13 @@ export function AuthProvider({ children }) {
       try {
         const cfg = await getConfig();
         const data = await requestHTTP('POST', cfg.API_ENDPOINT_REFRESH, { refreshToken }, console.log);
-        const next = { ...data };
+        const nextExpiresAt = Date.now() + data.expires * 60 * 1000;
         setUser(prev => {
-          const updated = { ...prev, accessToken: data.accessToken, expires: data.expires };
+          const updated = { ...prev, accessToken: data.accessToken, expiresAt: nextExpiresAt };
           localStorage.setItem("userAuth", JSON.stringify(updated));
           return updated;
         });
-        scheduleRefresh(data.expires, refreshToken);
+        scheduleRefresh(nextExpiresAt, refreshToken);
       } catch {
         logout();
       }
@@ -52,10 +52,12 @@ export function AuthProvider({ children }) {
     const user_data = { username: user, password: pass };
     if (!config) throw new Error("Config not loaded yet");
     const data = await requestHTTP('POST', config.API_ENDPOINT_LOGIN, user_data  ,console.log);
-    const nextUser = data.user ?? data; // { username, role , accessToken, refreshToken }
-    setUser(nextUser);
-    localStorage.setItem("userAuth", JSON.stringify(nextUser));
-    scheduleRefresh(nextUser.expires, nextUser.refreshToken);
+    const nextUser = data.user ?? data;
+    const expiresAt = Date.now() + nextUser.expires * 60 * 1000;
+    const stored = { ...nextUser, expiresAt };
+    setUser(stored);
+    localStorage.setItem("userAuth", JSON.stringify(stored));
+    scheduleRefresh(expiresAt, stored.refreshToken);
   };
 
   const register = async ( user , pass, classroom ) => {
@@ -63,9 +65,11 @@ export function AuthProvider({ children }) {
     if (!config) throw new Error("Config not loaded yet");
     const data = await requestHTTP('POST', config.API_ENDPOINT_REGISTER, user_data  ,console.log);
     const nextUser = data.user ?? data;
-    setUser(nextUser);
-    localStorage.setItem("userAuth", JSON.stringify(nextUser));
-    scheduleRefresh(nextUser.expires, nextUser.refreshToken);
+    const expiresAt = Date.now() + nextUser.expires * 60 * 1000;
+    const stored = { ...nextUser, expiresAt };
+    setUser(stored);
+    localStorage.setItem("userAuth", JSON.stringify(stored));
+    scheduleRefresh(expiresAt, stored.refreshToken);
   };
 
   const logout = () => {
@@ -77,7 +81,7 @@ export function AuthProvider({ children }) {
 
   // on mount: if user loaded from localStorage, reschedule refresh
   useEffect(() => {
-    if (user?.accessToken) scheduleRefresh(user.expires, user.refreshToken);
+    if (user?.accessToken) scheduleRefresh(user.expiresAt, user.refreshToken);
     return () => clearTimeout(refreshTimerRef.current);
   }, []);
 

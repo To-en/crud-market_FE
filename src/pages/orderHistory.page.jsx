@@ -48,7 +48,7 @@ export default function OrderHistoryPage() {
     if (!config || !user?.accessToken) return;
     setLoading(true);
     try {
-      const PAGE_SIZE = Number(import.meta.env.VITE_PAGESIZE) || 40;
+      const PAGE_SIZE = Number(import.meta.env.VITE_ORDER_PAGESIZE) || 40;
       // if have query search use API search , having none use listall associated order
       const params = new URLSearchParams({ page, limit: PAGE_SIZE });
       const searchParams = new URLSearchParams({ value: query, page, limit: PAGE_SIZE });
@@ -109,10 +109,11 @@ export default function OrderHistoryPage() {
   }
 
   // deleteOrderBill fetch
-  async function deleteOrder(params) {
+  async function deleteOrder(id) {
     try {
-      const data = await requestHTTP("GET", orderUrl(config, id, "delete"), undefined, undefined, user.accessToken);
-      setSelectedOrder(data);
+      await requestHTTP("PATCH", orderUrl(config, id, "delete"), undefined, undefined, user.accessToken);
+      setOrders(prev => prev.filter(order => order.id !== id));
+      if (selectedOrder?.id === id) setSelectedOrder(null);
     } catch {
       
     }
@@ -142,6 +143,7 @@ export default function OrderHistoryPage() {
                 <>
                   <th>Owner</th>
                   <th>Classroom</th>
+                  <th></th>
                 </>
               )}
             </tr>
@@ -177,6 +179,9 @@ export default function OrderHistoryPage() {
                   <>
                     <td>{orderElem.owner ?? "—"}</td>
                     <td>{orderElem.classroom ?? "—"}</td>
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <button className="button is-small is-danger" onClick={() => deleteOrder(orderElem.id)}>Delete</button>
+                    </td>
                   </>
                 )}
               </tr>
@@ -190,7 +195,7 @@ export default function OrderHistoryPage() {
         <div className="loading-row"><span className="spinner" /> Loading more…</div>
       )}
 
-      {/* Bill subpage (Should be floating windows) Not appear on Order  */}
+      {/* Bill subpage floating window (bulma modal flex box) */}
       {selectedOrder && (
         <div className="modal is-active">
           <div className="modal-background" onClick={() => setSelectedOrder(null)} />
