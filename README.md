@@ -3,7 +3,7 @@
 ## Structure
 ```
 crud-demo/
-├── backend/        Express API (port 3001)
+├── backend/        Express API (port 3000)
 │   ├── index.js
 │   └── package.json
 └── frontend/       Vite + React (port 5173)
@@ -34,7 +34,7 @@ npm run dev
 
 Open → http://localhost:5173
 
-## Endpoints (localhost:3001)
+## Endpoints (localhost:3000)
 
 | Method | Path         | Body                        | Description |
 |--------|--------------|-----------------------------|-------------|
@@ -48,20 +48,20 @@ Open → http://localhost:5173
 ## Test with curl
 ```bash
 # list
-curl http://localhost:3001/users
+curl http://localhost:3000/users
 
 # create
-curl -X POST http://localhost:3001/users \
+curl -X POST http://localhost:3000/users \
   -H "Content-Type: application/json" \
   -d '{"name":"Test User","email":"test@test.com","role":"Engineer"}'
 
 # update
-curl -X PUT http://localhost:3001/users/1 \
+curl -X PUT http://localhost:3000/users/1 \
   -H "Content-Type: application/json" \
   -d '{"name":"Updated Name","email":"new@test.com","role":"Manager"}'
 
 # delete
-curl -X DELETE http://localhost:3001/users/1
+curl -X DELETE http://localhost:3000/users/1
 ```
 
 ## Notes
