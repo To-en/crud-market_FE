@@ -4,8 +4,8 @@ config.json
 
 # 2. Ignore sensitive environment variable files
 .env
-.env.local
-.env.production
+.env.*
+!.env.example
 
 # 3. Ignore all files with a specific extension (using wildcards)
 *.log
@@ -16,6 +16,10 @@ config.json
 node_modules/
 dist/
 build/
+temp/
+dump/
+logs/
+.vscode/
 .idea/
 .DS_Store/
 .DS_Store
