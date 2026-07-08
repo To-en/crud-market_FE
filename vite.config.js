@@ -16,6 +16,11 @@ export default defineConfig(({ mode }) => {
         // future build option
     },
     
+    // vitest config — inherits vite plugins (react transform) automatically
+    test: {
+      environment: 'node', // vm-based tests, no DOM needed
+    },
+
     // Vite dev server setting
     server: {
       port: env.PORT ? Number(env.PORT) : 5173,
